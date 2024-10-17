@@ -1,0 +1,30 @@
+{
+  "name": "socket-chat",
+  "version": "0.0.1",
+  "description": "Chat for Meet",
+  "devDependencies": {
+    "nodemon": "^2.0.16",
+    "pm2": "^5.2.0"
+  },
+  "dependencies": {
+    "apn": "^2.2.0",
+    "bookshelf": "^1.2.0",
+    "bookshelf-processor-plugin": "^2.0.0",
+    "bookshelf-virtuals-plugin": "^1.0.0",
+    "config": "^2.0.2",
+    "cron": "^2.1.0",
+    "crypto": "^1.0.1",
+    "express": "^4.10.2",
+    "firebase-admin": "^9.5.0",
+    "fs": "0.0.1-security",
+    "knex": "^0.17.6",
+    "mysql": "^2.16.0",
+    "node-schedule": "^2.1.0",
+    "php-serialize": "^3.0.1",
+    "redis": "^3.0.2",
+    "socket.io": "^4.8.0"
+  },
+  "scripts": {
+    "dev": "nodemon index.js"
+  }
+}

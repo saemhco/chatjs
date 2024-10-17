@@ -1,0 +1,22 @@
+{
+    "database":{
+        "client":"mysql",
+        "connection":{
+            "host": "peaceful-db.crmkkw4cocli.us-east-1.rds.amazonaws.com",
+            "database": "and_filter",
+            "user": "admin",
+            "password": "fGrQWEI6D4jxZ0S44GqP5VxhM",
+            "charset"  : "utf8"
+        }
+    },
+    "host": {
+        "port": 3000
+    },
+    "https": {
+        "https_key": "/etc/letsencrypt/live/filter.aladin.od.ua/privkey.pem",
+        "https_cert": "/etc/letsencrypt/live/filter.aladin.od.ua/fullchain.pem"
+    },
+    "redis": {
+        "db": 2
+    }    
+}

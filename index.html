@@ -1,0 +1,415 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test socket chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      ul { list-style-type: none; margin: 0; padding: 0; }
+      ul li { padding: 5px 10px; }
+      ul li:nth-child(odd) { background: #eee; }
+       .layer {
+        overflow: auto;
+        width: 95%; /* Ширина блока */
+        height: 300px; /* Высота блока */
+        padding: 5px; /* Поля вокруг текста */
+        border: solid 1px black; /* Параметры рамки */
+       }
+       form{margin:10px;}
+    </style>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <div id="tabs">
+      <ul>
+        <li><a href="#auth">Auth</a></li>
+        <li><a href="#lr">Enter room</a></li>
+        <li><a href="#mr">Messages room</a></li>
+        <li><a href="#mread">Mark Message read</a></li>
+        <li><a href="#quitr">Quit room</a></li>
+        <li><a href="#str">Setting room</a></li>
+        <li><a href="#send">Send message</a></li>
+        <li><a href="#mesdegrading">Mark message degrading</a></li>
+        <li><a href="#mesabusive">Mark message abusive</a></li>
+        <li><a href="#rooms">Rooms</a></li>
+        <li><a href="#test">test</a></li>
+        <li><a href="#test2">test2</a></li>
+        <li><a href="#any">Any events, only log</a></li>
+      </ul>
+      <div id="auth">
+          <h2>Авторизация</h2>
+          <p>генерация события auth</p>
+        <div class="layer"><ul></ul></div>
+        <form id="form-auth" data-action="auth">
+          <label>key<input name="key" value="eyoQ6O6jw64pKdRYFmirgdY1beZxzxS4uwHE6r5dxIos3Raw0q8F8MBxb6vu" id="token_key"></label>
+          <button>Set</button>
+        </form>
+      </div>
+      <div id="lr">
+          <h2>Войти в комнату</h2>
+          <p>генерация события listen room</p>
+        <div class="layer"><ul></ul></div>
+        <form id="form-lr" data-action="listen room">
+          <label>room_id<input name="room_id" value="1"></label>
+          <button>Send</button>
+        </form>
+      </div>
+      <div id="mr">
+          <h2>Получить сообщения в комнате</h2>
+          <p>генерация события messages room</p>
+        <div class="layer"><ul></ul></div>
+        <form id="form-mr" data-action="messages room">
+          <label>room_id<input name="room_id" value="1"></label>
+          <label>page<input name="page" value="1"></label>
+          <button>Send</button>
+        </form>
+      </div>
+      <div id="mread">
+          <h2>Пометить сообщение прочитанным</h2>
+          <p>генерация события message read</p>
+        <div class="layer"><ul></ul></div>
+        <form id="form-mread" data-action="message read">
+          <label>message_id<input name="message_id" value="1"></label>
+          <button>Send</button>
+        </form>
+      </div>
+      <div id="quitr">
+          <h2>Выйти из комнаты</h2>
+          <p>генерация события quit room</p>
+        <div class="layer"><ul></ul></div>
+        <form id="form-quitr" data-action="quit room">
+          <button>Send</button>
+        </form>
+      </div>
+      <div id="str">
+          <h2>Настройки комнаты</h2>
+          <p>генерация события setting room</p>
+        <div class="layer"><ul></ul></div>
+        <form id="form-str" data-action="setting room">
+          <label>JSON settings<input name="settings" value='{ "name":"settings","d":2,"f":3, "t":"any text"}'></label>
+          <label>JSON settings_my<input name="settings_my" value='{"name":"settings_my", "s":1,"d":2,"f":3, "t":"any text"}'></label>
+          <button>Send</button>
+        </form>
+      </div>
+      <div id="send">
+          <h2>Отправить сообщение в комнату</h2>
+          <p>генерация события message send_room</p>
+        <div class="layer"><ul></ul></div>
+        <form id="form-send" data-action="message send_room">
+          <label>text<input name="text" value="example message"></label>
+          <label>time zone<input name="time_zone" value="-5"></label>
+          <button>Send</button>
+        </form>
+      </div>
+      <div id="mesdegrading">
+          <h2>Пометка сообщения как degrading</h2>
+          <p>генерация события message degrading</p>
+        <div class="layer"><ul></ul></div>
+        <form id="form-mesdegrading" data-action="message degrading">
+          <label>message_id<input name="message_id" value="1"></label>
+          <button>Send</button>
+        </form>
+      </div>
+      <div id="mesabusive">
+          <h2>Пометка сообщения как abusive</h2>
+          <p>генерация события message abusive</p>
+        <div class="layer"><ul></ul></div>
+        <form id="form-abusive" data-action="message abusive">
+          <label>message_id<input name="message_id" value="1"></label>
+          <button>Send</button>
+        </form>
+      </div>
+      <div id="rooms">
+          <h2>Доступные комнаты</h2>
+          <p>генерация события rooms</p>
+        <div class="layer"><ul></ul></div>
+        <form id="form-rooms" data-action="rooms">
+          <label>page<input name="page" value="1"></label>
+          <button>Send</button>
+        </form>
+      </div>
+      <div id="test">
+          <h2>Тест, получение комнаты и авторизованного пользователя на стороне сервера</h2>
+          <p>запуск включает дебагер, все получаемые события на стороне сервера дублируются в событие console log</p>
+          <p>повторный запуск - отключает дебагер</p>
+          <p>сам лог можно увидеть во вкладке Any events, only log</p>
+        <div class="layer"><ul></ul></div>
+        <form id="form-test" data-action="test">
+          <button>Send</button>
+        </form>
+      </div>
+      <div id="test2">
+          <h2>Тест</h2>
+        <div class="layer"><ul></ul></div>
+        <form id="form-test2" data-action="test temp">
+          <label>token device<input name="token" value=""></label>
+          <button>Send</button>
+        </form>
+      </div>
+      <div id="any">
+          <h2>Другие входящие события</h2>
+        <div class="layer"><ul></ul></div>
+      </div>
+    </div>
+  </body>
+<script>
+  var socket = io();
+  var user = {id:0};
+$( function() {
+    $( "#tabs" ).tabs();
+});
+function getDataForm(form_id){
+    var data = {};
+    $('#'+form_id).find ('input, textearea, select').each(function() {
+        if(this.name == 'settings' || this.name == 'settings_my'){
+            data[this.name] = JSON.parse($(this).val());
+        }else{
+            data[this.name] = $(this).val();
+        }
+    });
+    return data;
+}
+function viewResponse(el, event, msg){
+    $(el).append($('<li>').html('<b>'+event+':</b>'));
+    $(el).append($('<li>').html('<pre>'+JSON.stringify(msg, null, 2) + '</pre>') );
+}
+
+</script>
+<script>
+
+$( function() {
+    var token = getAllUrlParams().token;
+    if(token){
+        $('#token_key').val(token);
+    }
+
+    var list = $('form').get();
+    for(var i = 0; i< list.length; i++){
+        let item = list[i];
+        let id_form = item.id;
+        console.log(id_form);
+        let event = $(item).data('action');
+        let message = $(item).closest('div').find('ul');
+
+            $('form#' + id_form).submit(function(){
+                var data = getDataForm(this.id);
+                var action = $(this).data('action');
+                socket.emit(action, data);
+                return false;
+            });
+
+            socket.on(event, function(msg){
+                console.log(event);
+                console.log(msg);
+                viewResponse(message, event, msg);
+            });
+    }
+    socket.on('console log', function(msg){
+        let message = $('#any ul').get()[0];
+        console.log(msg);
+        viewResponse(message, 'console log', msg);
+    });
+    socket.on('room update', function(msg){
+        let message = $('#any ul').get()[0];
+        console.log(msg);
+        viewResponse(message, 'room update', msg);
+    });
+
+
+    socket.on('settings room', function(msg){
+        let message = $('#any ul').get()[0];
+        console.log(msg);
+        viewResponse(message, 'settings room', msg);
+    });
+    socket.on('message readed', function(msg){
+        let message = $('#any ul').get()[0];
+        console.log(msg);
+        viewResponse(message, 'message readed', msg);
+    });
+    socket.on('new setting room', function(msg){
+        let message = $('#any ul').get()[0];
+        console.log(msg);
+        viewResponse(message, 'new setting room', msg);
+    });
+        socket.on('reconnect', function () {
+            var socketId = socket.id;
+/*
+            socket.emit('reconnectAttempt',{
+                id: $matchId,
+                username: $username,
+                socketId: socketId
+            });
+*/
+            console.log("you were reconnected socketId="+socketId);
+        });
+});
+
+
+</script>
+<script>
+/*
+  $('form#preset').submit(function(){
+        var key = $('#key').val();
+        socket.emit('auth', { 'key':key});
+        return false;
+  });
+  $('form#listen_room').submit(function(){
+      var ob = {
+          "room_id": $('#room_id').val()
+      };
+    socket.emit('listen room', ob);
+    $('#m').val('');
+    return false;
+  });
+
+  $('form#send').submit(function(){
+      var ob = {
+          "text": $('#m').val()
+      };
+    socket.emit('message send_room', ob);
+    $('#m').val('');
+    return false;
+  });
+
+  $('form#friend').submit(function(){
+
+      var ob = {
+          "text": $('#friend input[name="id"]').val()
+      };
+    socket.emit('message send', ob);
+    $('#m').val('');
+    return false;
+  });
+
+  $('form#ts').submit(function(){
+    socket.emit('test', {'id':user.id});
+    return false;
+  });
+
+    $('form#settings').submit(function(){
+        var data = getDataForm('settings');
+        socket.emit('setting room', data);
+        return false;
+    });
+    $('form#rooms').submit(function(){
+        socket.emit('rooms', {});
+        return false;
+    });
+
+
+  socket.on('chat message', function(msg){
+    $('#messages').append($('<li>').text(msg));
+  });
+  socket.on('message send_room', function(msg){
+        console.log('message send_room: ');
+        console.log(msg);
+
+    $('#messages').append($('<li>').text(msg));
+  });
+
+    socket.on('error', function(msg){
+        console.log('Error: ');
+        console.log(msg);
+    });
+    socket.on('auth', function(msg){
+        console.log('auth: ');
+        console.log(msg);
+    });
+    socket.on('test', function(msg){
+        console.log('TEST ');
+        console.log(msg);
+    });
+    socket.on('message readed', function(msg){
+        console.log('message readed');
+        console.log(msg);
+    });
+    socket.on('log in', function(msg){
+        console.log('log in ');
+    });
+    socket.on('console log', function(msg){
+        console.log(msg);
+    });
+    socket.on('setting room', function(msg){
+        console.log(msg);
+    });
+    socket.on('new setting room', function(msg){
+        console.log(msg);
+    });
+    socket.on('rooms', function(msg){
+        console.log('rooms');
+        console.log(msg);
+    });
+    socket.on('room update', function(msg){
+        console.log('room update');
+        console.log(msg);
+    });
+*/
+
+function getAllUrlParams(url) {
+
+  // извлекаем строку из URL или объекта window
+  var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
+
+  // объект для хранения параметров
+  var obj = {};
+
+  // если есть строка запроса
+  if (queryString) {
+
+    // данные после знака # будут опущены
+    queryString = queryString.split('#')[0];
+
+    // разделяем параметры
+    var arr = queryString.split('&');
+
+    for (var i=0; i<arr.length; i++) {
+      // разделяем параметр на ключ => значение
+      var a = arr[i].split('=');
+
+      // обработка данных вида: list[]=thing1&list[]=thing2
+      var paramNum = undefined;
+      var paramName = a[0].replace(/\[\d*\]/, function(v) {
+        paramNum = v.slice(1,-1);
+        return '';
+      });
+
+      // передача значения параметра ('true' если значение не задано)
+      var paramValue = typeof(a[1])==='undefined' ? true : a[1];
+
+      // преобразование регистра
+      paramName = paramName.toLowerCase();
+      paramValue = paramValue.toLowerCase();
+
+      // если ключ параметра уже задан
+      if (obj[paramName]) {
+        // преобразуем текущее значение в массив
+        if (typeof obj[paramName] === 'string') {
+          obj[paramName] = [obj[paramName]];
+        }
+        // если не задан индекс...
+        if (typeof paramNum === 'undefined') {
+          // помещаем значение в конец массива
+          obj[paramName].push(paramValue);
+        }
+        // если индекс задан...
+        else {
+          // размещаем элемент по заданному индексу
+          obj[paramName][paramNum] = paramValue;
+        }
+      }
+      // если параметр не задан, делаем это вручную
+      else {
+        obj[paramName] = paramValue;
+      }
+    }
+  }
+
+  return obj;
+}
+
+
+</script>
+</html>

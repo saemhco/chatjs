@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Test</title>
+    <!-- Cargar Socket.IO desde la CDN -->
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Lista de Chats</h1>
+    <ul id="chat-list">
+        <!-- La lista de chats se cargará aquí -->
+    </ul>
+
+    <script>
+        // Conexión al servidor Socket.IO
+        const socket = io.connect('http://localhost:3000'); // Cambia el puerto si es necesario
+
+        // Emitir un evento para solicitar la lista de salas de chat
+        socket.emit('rooms', { page: 1 });
+
+        // Escuchar la respuesta del servidor con la lista de salas
+        socket.on('rooms', function(data) {
+            console.log('Recibiendo la lista de chats:', data);
+
+            // Obtiene el elemento donde se mostrará la lista de chats
+            const chatList = document.getElementById('chat-list');
+
+            // Limpiar la lista actual (si ya existe)
+            chatList.innerHTML = '';
+
+            // Iterar sobre la lista de chats recibidos y agregarlos al HTML
+            data.result.forEach(function(room) {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Chat ID: ${room.id}, Nombre: ${room.name}`;
+                chatList.appendChild(listItem);
+            });
+        });
+
+        // Opcional: Mostrar un mensaje si ocurre un error
+        socket.on('error', function(error) {
+            console.error('Error recibido del servidor:', error);
+        });
+    </script>
+</body>
+</html>
